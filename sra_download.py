@@ -37,7 +37,7 @@ def check_config():
 
 def make_parallel(cmds, threads):
     '''
-    Divide tasks into blocks for parallel running
+    Divide tasks into blocks for parallel running.
     Put the cmd in parallel into the same bundle.
     The bundle size equals the threads.
     '''
@@ -73,7 +73,7 @@ def wget(srr_id):
     '''
     target_path = paras.target_path.rstrip("/")
     if not os.path.exists(target_path): os.makedirs(target_path)
-    cmd = ['wget -c -O %s/%s.sra ftp://ftp.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/%s/%s/%s/%s.sra' %(
+    cmd = ['wget --timeout=30 -nc -c -O %s/%s.sra ftp://ftp.ncbi.nlm.nih.gov/sra/sra-instant/reads/ByRun/sra/%s/%s/%s/%s.sra' %(
         target_path, srr_id, srr_id[0:3], srr_id[0:6], srr_id, srr_id)]
     return cmd
 
