@@ -32,9 +32,6 @@ class runParallel(threading.Thread):
         for cmd in self.cmds:
             os.system(cmd)
 
-def check_config():
-    pass
-
 def make_parallel(cmds, threads):
     '''
     Divide tasks into blocks for parallel running.
@@ -51,6 +48,16 @@ def make_parallel(cmds, threads):
         j = (j+1) % threads
     return cmd_list
 
+def exe_parallel(cmds, threads):
+    cmd_list = make_parallel(cmds, threads)
+        for cmd_batch in cmd_list:
+            for cmd in cmd_batch:
+                t = runParallel(cmd)
+                t.start()
+            t.join()
+
+def check_config():
+    pass
 
 def load_task(taskfile):
     '''
@@ -99,9 +106,4 @@ if __name__ == '__main__':
     except NameError:
         print("Please select one mode [--download|--fastq_dump]")
     else:
-        cmd_list = make_parallel(cmds, paras.threads)
-        for cmd_batch in cmd_list:
-            for cmd in cmd_batch:
-                t = runParallel(cmd)
-                t.start()
-            t.join()
+        exe_parallel(cmds, paras.threads)
