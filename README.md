@@ -12,24 +12,32 @@ This is a python script (draft) for download sequencing data from SRA database
 ### Usage
 
 ```txt
-usage: sra_download.py [-h] [--download] [--fastq_dump] [-t TARGET_PATH]
-                       [--sra_file SRA_FILE] [--threads THREADS] [--version]
+usage: sra_download.py [-h] [--wget] [--prefetch] [--fastq-dump]
+                       [-t TARGET_PATH] [--sra SRA_FILE] [--threads THREADS]
+                       [--version]
 
 optional arguments:
   -h, --help            show this help message and exit
-  --download            download sra file
-  --fastq_dump          tranverse sra to fastq.gz
+  --wget                download sra file through ftp use wget
+  --prefetch            download sra file through https use prefetch
+  --fastq-dump          tranverse sra to fastq.gz
   -t TARGET_PATH, --target TARGET_PATH
-                        target path
-  --sra_file SRA_FILE   The txt file contains SRR id for download
+                        download path of sra file use --wget. For --fastq-
+                        dump, this is the path containing sra file
+  --sra SRA_FILE        The txt file contains SRR id for download
   --threads THREADS     threads for tasks
   --version             show program's version number and exit
 ```
 
 ```shell
 #for example
-# step1. Download SRA file
-python sra_download.py --download -t $target_path --sra_file sra_list.txt --threads 5
+# step1. Download SRA file though ftp (wget)
+python sra_download.py --wget -t $target_path --sra sra_list.txt --threads 5
+# or Download SRA file though https (prefetch)
+# Under this mode, user can not define the download path, 
+# except define by vdb-config. (vdb-config -i)
+# The default download path is /home/${user_name}/ncbi
+python sra_download.py --prefetch --sra sra_list.txt --threads 5
 # step2. Tranverse SRA file to FASTQ file
 python sra_download.py --fastq_dump -t $target_path --threads 5
 ```
@@ -39,6 +47,8 @@ python sra_download.py --fastq_dump -t $target_path --threads 5
 `run.pbs` is a pbs script running on Nebula cluster.
 
 Please add `sratoolkit` directory to you $PATH first.
+
+For details of `vdb-config`, see this link: <https://github.com/ncbi/sra-tools/wiki/Toolkit-Configuration>
 
 ### Requirements
 

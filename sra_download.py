@@ -6,15 +6,18 @@ import argparse
 ## Parameters
 parser = argparse.ArgumentParser()
 
-parser.add_argument('--download', action='store_const', dest='mode',
-        const='download',
-        help='download sra file')
-parser.add_argument('--fastq_dump', action='store_const', dest='mode',
-        const='fastq_dump',
+parser.add_argument('--wget', action='store_const', dest='mode',
+        const='wget',
+        help='download sra file through ftp use wget')
+parser.add_argument('--prefetch', action='store_const', dest='mode',
+        const='prefetch',
+        help='download sra file through https use prefetch')
+parser.add_argument('--fastq-dump', action='store_const', dest='mode',
+        const='fastq-dump',
         help='tranverse sra to fastq.gz')
 parser.add_argument('-t','--target', action='store', dest='target_path',
-        help='target path')
-parser.add_argument('--sra_file', action='store', dest='sra_file',
+        help='download path of sra file use --wget. For --fastq-dump, this is the path containing sra file')
+parser.add_argument('--sra', action='store', dest='sra_file',
         help='The txt file contains SRR id for download')
 parser.add_argument('--threads', action='store', dest='threads', type=int,
         help='threads for tasks')
@@ -85,7 +88,8 @@ def wget(srr_id):
     return cmd
 
 def prefetch(srr_id):
-    pass
+    cmd = ["prefetch %s" % srr_id]
+    return cmd
 
 def fastq_dump(sra_file):
     target_path = paras.target_path if paras.target_path.endswith("/") else paras.target_path+"/"
@@ -95,15 +99,18 @@ def fastq_dump(sra_file):
 
 if __name__ == '__main__':
     check_config()
-    if paras.mode == "download":
+    if paras.mode == "wget":
         tasks = load_task(paras.sra_file)
         cmds = [wget(srr_id) for srr_id in tasks]
-    if paras.mode == "fastq_dump":
+    if paras.mode == "prefetch":
+        tasks = load_task(paras.sra_file)
+        cmds = [prefetch(srr_id) for srr_id in tasks]
+    if paras.mode == "fastq-dump":
         sra_files = load_sra_file(paras.target_path)
         cmds = [fastq_dump(sra_f) for sra_f in sra_files]
     try:
         cmds
     except NameError:
-        print("Please select one mode [--download|--fastq_dump]")
+        print("Please select one mode [--wget | --prefetch | --fastq_dump]")
     else:
         exe_parallel(cmds, paras.threads)
