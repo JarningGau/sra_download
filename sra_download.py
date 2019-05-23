@@ -111,6 +111,6 @@ if __name__ == '__main__':
     try:
         cmds
     except NameError:
-        print("Please select one mode [--wget | --prefetch | --fastq_dump]")
+        print("Please select one mode [--wget | --prefetch | --fastq-dump]")
     else:
         exe_parallel(cmds, paras.threads)
