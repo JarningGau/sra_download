@@ -50,11 +50,11 @@ def make_parallel(cmds, threads):
 
 def exe_parallel(cmds, threads):
     cmd_list = make_parallel(cmds, threads)
-        for cmd_batch in cmd_list:
-            for cmd in cmd_batch:
-                t = runParallel(cmd)
-                t.start()
-            t.join()
+    for cmd_batch in cmd_list:
+        for cmd in cmd_batch:
+            t = runParallel(cmd)
+            t.start()
+        t.join()
 
 def check_config():
     pass
