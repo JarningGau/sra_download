@@ -15,6 +15,9 @@ parser.add_argument('--prefetch', action='store_const', dest='mode',
 parser.add_argument('--fastq-dump', action='store_const', dest='mode',
         const='fastq-dump',
         help='tranverse sra to fastq.gz')
+parser.add_argument('--sam-dump', action='store_const', dest='mode',
+        const='sam-dump',
+        help='tranverse sra to SAM and then to fastq with CB and UB information, specially for dropseq data')
 parser.add_argument('-t','--target', action='store', dest='target_path',
         help='download path of sra file use --wget. For --fastq-dump, this is the path containing sra file')
 parser.add_argument('--sra', action='store', dest='sra_file',
@@ -99,6 +102,12 @@ def fastq_dump(sra_file):
     cmd = ['fastq-dump -O %s --split-3 --gzip %s' %(target_path, sra_file)]
     return cmd
 
+def sam_dump(sra_file):
+    target_path = paras.target_path if paras.target_path.endswith("/") else paras.target_path+"/"
+    fastq_file = sra_file.split(".sra")[0] + ".fastq"
+    cmd = ['''sam-dump -n %s | awk '{print "@"$1"_"substr($13,6,16)"_"substr($14,6,10)"\\n"$10"\\n+\\n"$11}' > %s ''' %(sra_file, fastq_file)]
+    return cmd
+
 
 if __name__ == '__main__':
     check_config()
@@ -111,9 +120,12 @@ if __name__ == '__main__':
     if paras.mode == "fastq-dump":
         sra_files = load_sra_file(paras.target_path)
         cmds = [fastq_dump(sra_f) for sra_f in sra_files]
+    if paras.mode == "sam-dump":
+        sra_files = load_sra_file(paras.target_path)
+        cmds = [sam_dump(sra_f) for sra_f in sra_files]
     try:
         cmds
     except NameError:
-        print("Please select one mode [--wget | --prefetch | --fastq-dump]")
+        print("Please select one mode [--wget | --prefetch | --fastq-dump | --sam-dump]")
     else:
         exe_parallel(cmds, paras.threads)
