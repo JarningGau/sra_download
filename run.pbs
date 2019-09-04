@@ -8,4 +8,4 @@
 
 cd $home #user define
 module load sratoolkit
-python sra_download.py --download -t data/raw --sra_file sra_list.txt --threads 5
+python sra_download.py --wget -t data/raw --sra sra_list.txt --threads 5

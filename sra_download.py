@@ -105,7 +105,7 @@ def fastq_dump(sra_file):
 def sam_dump(sra_file):
     target_path = paras.target_path if paras.target_path.endswith("/") else paras.target_path+"/"
     fastq_file = sra_file.split(".sra")[0] + ".fastq"
-    cmd = ['''sam-dump -n %s | awk '{print "@"$1"_"substr($13,6,16)"_"substr($14,6,10)"\\n"$10"\\n+\\n"$11}' > %s ''' %(sra_file, fastq_file)]
+    cmd = ['''sam-dump -n %s | grep "CB:Z" | awk '{print "@"$1"_"substr($13,6,16)"_"substr($14,6,10)"\\n"$10"\\n+\\n"$11}' > %s ''' %(sra_file, fastq_file)]
     return cmd
 
 

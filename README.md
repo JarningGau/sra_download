@@ -12,7 +12,7 @@ This is a python script (draft) for download sequencing data from SRA database
 ### Usage
 
 ```txt
-usage: sra_download.py [-h] [--wget] [--prefetch] [--fastq-dump]
+usage: sra_download.py [-h] [--wget] [--prefetch] [--fastq-dump] [--sam-dump]
                        [-t TARGET_PATH] [--sra SRA_FILE] [--threads THREADS]
                        [--version]
 
@@ -21,6 +21,8 @@ optional arguments:
   --wget                download sra file through ftp use wget
   --prefetch            download sra file through https use prefetch
   --fastq-dump          tranverse sra to fastq.gz
+  --sam-dump            tranverse sra to SAM and then to fastq with CB and UB
+                        information, specially for dropseq data
   -t TARGET_PATH, --target TARGET_PATH
                         download path of sra file use --wget. For --fastq-
                         dump, this is the path containing sra file
